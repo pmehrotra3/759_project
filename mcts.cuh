@@ -90,9 +90,6 @@ HD int add_node(Tree &tree, const Board &board) {
 
 }
 
-// ---------------------------------------------------------------------------
-// TODO 2: how promising is action a from node n?  (the "PUCT" formula)
-// ---------------------------------------------------------------------------
 //   Q = value_sum[a] / visits[a]          average result so far (use 0 if visits[a] == 0)
 //   U = C_PUCT * prior[a] * sqrt(total_visits + 1) / (1 + visits[a])
 //   score = Q + U
@@ -100,8 +97,12 @@ HD int add_node(Tree &tree, const Board &board) {
 // tried it much". U shrinks as visits[a] grows, so the search moves on.
 // Use sqrtf, and cast the ints to float before dividing.
 HD float puct_score(const Node &n, int a) {
-    // TODO 2
-    return 0.0f;
+    float Q = 0;
+    if (n.visits[a] != 0){
+        Q = n.value_sum[a] / (float)n.visits[a];
+    }
+    float U = C_PUCT * n.prior[a] * sqrtf((float)n.total_visits + 1.0f) / (1.0f + (float)n.visits[a]);
+    return Q+U;
 }
 
 // ---------------------------------------------------------------------------
