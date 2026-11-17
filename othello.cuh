@@ -88,6 +88,27 @@ HD uint64_t legal_moves(uint64_t me, uint64_t opp) {
     return moves;
 }
 
+// ---------------------------------------------------------------------------
+// Step 6: who won
+// ---------------------------------------------------------------------------
+// Count how many discs (1 bits) are on a bitboard
+HD int count_discs(uint64_t b) {
+#ifdef __CUDA_ARCH__
+    return __popcll(b);              // GPU instruction
+#else
+    return __builtin_popcountll(b);  // CPU instruction
+#endif
+}
+
+// Returns 0 if black won, 1 if white won, -1 if it is a draw
+HD int winner(const Board &b) {
+    int black = count_discs(b.black);
+    int white = count_discs(b.white);
+    if (black > white) return 0;
+    if (white > black) return 1;
+    return -1;
+}
+
 HD Board makeMove(Board board, uint64_t black, uint64_t white, int side) {
     return {black, white, side};
 }
