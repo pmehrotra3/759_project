@@ -114,8 +114,20 @@ HD float puct_score(const Node &n, int a) {
 //   - on a tie keep the first one found (use > and not >=), so results are reproducible
 // This is only called on nodes that are not terminal.
 HD int select_action(const Node &n) {
-    // TODO 3
-    return -1;
+    if (n.legal == 0){
+        return PASS_ACTION;
+    }
+    float ma = -1e30f;
+    int idx = -1;
+    for (uint64_t m = n.legal; m; m &= m - 1) {
+        int a = lowest_square(m);
+        float score = puct_score(n, a);
+        if (score > ma){
+            idx = a;
+            ma = score;
+        }
+    }
+    return idx;
 }
 
 // ---------------------------------------------------------------------------
