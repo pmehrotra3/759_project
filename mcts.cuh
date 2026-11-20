@@ -130,9 +130,6 @@ HD int select_action(const Node &n) {
     return idx;
 }
 
-// ---------------------------------------------------------------------------
-// TODO 4: SELECT - walk down the tree and add one new node
-// ---------------------------------------------------------------------------
 // Start with cur = 0 (the root) and path.depth = 0. Then repeat:
 //   a. if node cur is terminal: stop and return cur (nothing is added)
 //   b. a = select_action(node cur)
@@ -144,8 +141,21 @@ HD int select_action(const Node &n) {
 // Returns the index of the leaf: a brand-new node, or an old terminal one.
 HD int select_leaf(Tree &tree, Path &path) {
     path.depth = 0;
-    // TODO 4
-    return 0;
+    int cur = 0;
+    while (tree.nodes[cur].terminal != 1){
+        int a = select_action(tree.nodes[cur]);
+        path.node[path.depth] = cur;
+        path.action[path.depth] = a;
+        path.depth++;
+        if (tree.nodes[cur].child[a] == -1){
+            tree.nodes[cur].child[a] = add_node(tree, apply_action(tree.nodes[cur].board, a));
+            return tree.nodes[cur].child[a];
+        }
+        else {
+            cur = tree.nodes[cur].child[a];
+        }
+    } 
+    return cur;
 }
 
 // ---------------------------------------------------------------------------
